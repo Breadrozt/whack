@@ -2,8 +2,12 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  template: `
+  <app-header></app-header>
+  <hr>
+  <app-moles></app-moles>
+  `,
+  styles: ['']
 })
 export class AppComponent {
   title = 'whackAMole';
