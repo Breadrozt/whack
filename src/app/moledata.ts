@@ -1,5 +1,10 @@
+
 export type gameMode = {
-    timer:number,
-    points:number,
-    moles:[Boolean]
+    gameRunning?:boolean,
+    timer?:number,
+    points?:number,
+    moles?:boolean,
+    gameMoles?:number[][]
+    numberOfMoles?:number,
+    image?:string
 }

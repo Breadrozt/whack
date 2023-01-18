@@ -1,49 +1,81 @@
-import { Injectable,OnInit } from '@angular/core';
+import { Injectable,OnInit, ElementRef } from '@angular/core';
 import { gameMode } from './moledata';
+import { NgClass } from '@angular/common';
+import { timeInterval } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MoleService implements OnInit {
-  timer:number=60
-  points:number=0
-  moles:boolean=false
-  gameMoles:number [] = []
-  numberOfMoles:number = 0
-  image = ['JS2/WhackAMole/whackAMole/images/images.jpgC:/Users/Viktor/iCloudDrive/Desktop/Javascript/JS2/WhackAMole/whackAMole/node_modulesC:/Users/Viktor/iCloudDrive/Desktop/Javascript/JS2/WhackAMole/whackAMole/src/app/mole.service.ts']
+export class MoleService {
 
-  constructor( ) {}
+  gameRunning:gameMode= {gameRunning:false};  // Gives Values to gameMode for usage all around the app.
+  timer:gameMode= {timer: 60}
+  points:gameMode={points:0};
+  moles:gameMode={moles:false};
+  gameMoles:gameMode={gameMoles:[]=[]}
+  numberofMoles:gameMode={numberOfMoles: -1}
+  image:gameMode={image:'JS2/WhackAMole/whackAMole/images/images.jpgC:/Users/Viktor/iCloudDrive/Desktop/Javascript/JS2/WhackAMole/whackAMole/node_modulesC:/Users/Viktor/iCloudDrive/Desktop/Javascript/JS2/WhackAMole/whackAMole/src/app/mole.service.ts'}
+  
+  constructor(
+    ) {}
+    testGrid: boolean[]= [  // the grid layout for our moles and sets them all to false/ not shown
+      false,false,false,false,false,
+      false,false,false,false,false,
+      false,false,false,false,false,
+      false,false,false,false,false,
+      false,false,false,false,false,
+    ]
+    testGrid2: NodeJS.Timer[]= [  // the grid layout for our moles and sets them all to false/ not shown
+    ,,,,,
+    ,,,,,
+    ,,,,,
+    ,,,,,
+    ,,,,,
+  ]
 
-grid: string[][] = [
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-  ];
+    
 
-startGame():void {
-  setInterval( () => this.countdown(this.timer), 1000)
+startGame():void {          // Method for starting the game and the clock system.
+  this.gameRunning.gameRunning = true
+  setInterval( () => this.countdown(60), 1000)
+  console.log(this.gameRunning.gameRunning)  
 }
-countdown(numberRecieved:number) {
-  if(this.timer===0){
-    alert("game finished, reset?")
-  }else {
-    this.timer--;
+
+ countdown(numberRecieved:number) { // this needs fixing. to start a new game after countdown is finished and show points.
+   if(this.timer.timer < 0 ){
+     confirm('game finished, you scored {{this.points.points}}')
+   }else {
+     this.timer.timer--;
+     this.MoleRandomize()
+
+   }
+ }
+
+ MoleRandomize(){ // used for randomizing a spot for the mole to show up in 
+  if (this.numberofMoles.numberOfMoles < 4){
+    let randomizer =  Math.floor(Math.random() * 26)
+    if(this.testGrid[randomizer]==false){
+      this.testGrid[randomizer]= true
+      this.numberofMoles.numberOfMoles ++
+      this.testGrid2[randomizer] = setInterval( ()=> this.moleUpTime(randomizer), 4000) // starts the inertvalls //issues here*******
+    }
   }
 }
-setTime(){
-  this.timer=5
+moleUpTime(randomizer:number){ // the method for putting the moles back down if they havent been clicked. //issues here****
+  if(this.testGrid[randomizer]){
+    this.testGrid[randomizer]=false
+    this.numberofMoles.numberOfMoles--
+    clearInterval(this.testGrid2[randomizer])
+  }
 }
-pointGain(){
-  this.points++
 
-}
-ngOnInit() {
-  console.log("hello")
-    // this.numberOfMoles = 25
-    // for(let i=0; i<this.numberOfMoles; i++){
-    //   this.gameMoles.push(this.numberOfMoles)
-    // }
-}
+ pointGain(value:any){ // method for clicking a mole and gaining points, decreasing mole count so more can spawn. 
+   if(this.gameRunning){
+     this.points.points++
+     this.numberofMoles.numberOfMoles--
+     console.log(this.numberofMoles.numberOfMoles)
+     this.testGrid[value]= !this.testGrid[value]
+     console.log(value)
+   }
+ }
 }

@@ -5,39 +5,45 @@ import { MoleService } from '../mole.service';
   selector: 'app-moles',
   template: `
     <div class="game-board">
-      <div class="row" *ngFor=" let row of this.__moleService.grid; let i = index">
-        <div class="cell" *ngFor=" let Images of row; let j = index">
-          <img *ngIf="Images" [src]="Images" (click)="__moleService.pointGain()">Mole
+        <div class="cell" *ngFor="let cell of __moleService.testGrid; let i = index">
+          <ng-template [ngIf]='__moleService.testGrid[i]'>
+            <button class=""
+            *ngIf="this.__moleService.gameRunning.gameRunning" 
+            (click)="__moleService.pointGain(i)"
+            ><img class="image" src="https://a-z-animals.com/media/animals/images/original/mole2.jpg" alt=""></button>
+          </ng-template>
         </div>
-      </div>
     </div>
   `,
-  styles: [`
-.row {
-  display: flex;
-  flex-wrap: wrap;
+styles: [`
+  .red{
+  background-color:red
 }
-.cell {
-  display: flex;
-  width:100px;
+  .game-board {
+  display:flex;
+  flex-wrap:wrap;
+  width: 700px
+}
+  .cell {
+  width:70px;
+  height:50px;
   padding:10px;
-  margin:20px;
+  margin:30px;
+  background-color: green
 }
+  .image {
+    width:100%
+  }
 `]
 })
 export class MolesComponent{
- grid:string [][];
- Images = this.__moleService.image
-
-  constructor(
-   public __moleService:MoleService,
-  )
-  { this.grid= this.__moleService.grid}
-  // ngOnInit(): void {
-  //   this.__moleService.numberOfMoles = 25
-  //    for(let i=0; i<this.__moleService.numberOfMoles; i++){
-  //      this.__moleService.gameMoles.push(i)
-  //    }
-//*ngFor="let mole of this.__moleService.gameMoles"
+  grid:string [][];
+  test123:boolean=true
+  numberofMolea = this.__moleService.numberofMoles
+  Images = this.__moleService.image
+  gameMoles = this.__moleService.gameMoles
+    constructor(
+    public __moleService:MoleService,
+    )
+  {}
  }
-    

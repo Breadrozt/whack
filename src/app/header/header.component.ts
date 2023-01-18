@@ -4,13 +4,11 @@ import { MoleService } from '../mole.service';
   selector: 'app-header',
   template: `
   timer
-  {{__moleService.timer}}
-
-  <button (click)="__moleService.startGame()" [disabled]="__moleService.timer==0 ||__moleService.timer<5 " >Start Game</button>
-  <button (click)="__moleService.setTime()">5 seconds</button>
+  {{__moleService.timer.timer}}
+  <button (click)="__moleService.startGame()" [disabled]="__moleService.timer.timer==0 ||__moleService.timer.timer<60 " >Start Game</button>
 
   Points
-  {{__moleService.points}}
+  {{__moleService.points.points}}
   `,
   styles: [
   ]
