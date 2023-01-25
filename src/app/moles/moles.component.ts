@@ -1,35 +1,41 @@
-import { Component, OnInit } from '@angular/core';
+import { Component} from '@angular/core';
 import { MoleService } from '../mole.service';
 
 @Component({
   selector: 'app-moles',
   template: `
+  <body>
     <div class="game-board">
-        <div class="cell" *ngFor="let cell of __moleService.testGrid; let i = index">
-          <ng-template [ngIf]='__moleService.testGrid[i]'>
+        <div class="cell" *ngFor="let cell of __moleService.moleGrid; let i = index">
+          <ng-template [ngIf]='__moleService.moleGrid[i]'>
             <button class=""
             *ngIf="this.__moleService.gameRunning.gameRunning" 
             (click)="__moleService.pointGain(i)"
-            ><img class="image" src="https://a-z-animals.com/media/animals/images/original/mole2.jpg" alt=""></button>
+            ><img class="image" src="../../assets/3627329.png" alt=""></button>
           </ng-template>
         </div>
     </div>
+    <hr>
+    <app-user></app-user>
+  </body>
   `,
 styles: [`
-  .red{
-  background-color:red
-}
+  body{
+    background-color: #3D3C3A;
+    color: white;
+  }
   .game-board {
   display:flex;
   flex-wrap:wrap;
-  width: 700px
+  width:100%;
+
 }
   .cell {
-  width:70px;
-  height:50px;
-  padding:10px;
-  margin:30px;
-  background-color: green
+  width:150px;
+  height:120px;
+  margin:5px;
+  background-image: url("../../assets/backgroundimage4.0.jpg");
+
 }
   .image {
     width:100%
@@ -37,11 +43,6 @@ styles: [`
 `]
 })
 export class MolesComponent{
-  grid:string [][];
-  test123:boolean=true
-  numberofMolea = this.__moleService.numberofMoles
-  Images = this.__moleService.image
-  gameMoles = this.__moleService.gameMoles
     constructor(
     public __moleService:MoleService,
     )

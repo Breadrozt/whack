@@ -1,7 +1,5 @@
 import { Injectable,OnInit, ElementRef } from '@angular/core';
 import { gameMode } from './moledata';
-import { NgClass } from '@angular/common';
-import { timeInterval } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,57 +13,74 @@ export class MoleService {
   gameMoles:gameMode={gameMoles:[]=[]}
   numberofMoles:gameMode={numberOfMoles: -1}
   image:gameMode={image:'JS2/WhackAMole/whackAMole/images/images.jpgC:/Users/Viktor/iCloudDrive/Desktop/Javascript/JS2/WhackAMole/whackAMole/node_modulesC:/Users/Viktor/iCloudDrive/Desktop/Javascript/JS2/WhackAMole/whackAMole/src/app/mole.service.ts'}
+  gameDone:gameMode ={gameDone:false}
+  fastestTime:gameMode={fastestTime:null}
   
   constructor(
     ) {}
-    testGrid: boolean[]= [  // the grid layout for our moles and sets them all to false/ not shown
+    moleGrid: boolean[]= [  // the grid layout for our moles and sets them all to false/ not shown
       false,false,false,false,false,
       false,false,false,false,false,
       false,false,false,false,false,
       false,false,false,false,false,
       false,false,false,false,false,
     ]
-    testGrid2: NodeJS.Timer[]= [  // the grid layout for our moles and sets them all to false/ not shown
+    moleTimerGrid: NodeJS.Timer[]= [  // the grid layout for our moles and sets them all to false/ not shown
     ,,,,,
     ,,,,,
     ,,,,,
     ,,,,,
     ,,,,,
   ]
+    timerGrid:number[] =[ // grid for pushing the speed of a click into.
+    ,,,,,
+    ,,,,,
+    ,,,,,
+    ,,,,,
+    ,,,,,
+    ]
+    Clicktimer: number; // property for checking when something was clicked.
+
 
     
 
-startGame():void {          // Method for starting the game and the clock system.
+ startGame():void {          // Method for starting the game and the clock system.
   this.gameRunning.gameRunning = true
-  setInterval( () => this.countdown(60), 1000)
-  console.log(this.gameRunning.gameRunning)  
+  this.timer.timer=60;
+  this.points.points=0;
+  this.fastestTime.fastestTime=9999;
+  this.countdown() 
 }
 
- countdown(numberRecieved:number) { // this needs fixing. to start a new game after countdown is finished and show points.
-   if(this.timer.timer < 0 ){
-     confirm('game finished, you scored {{this.points.points}}')
-   }else {
-     this.timer.timer--;
-     this.MoleRandomize()
-
-   }
+ countdown() { // this needs fixing. to start a new game after countdown is finished and show points.
+  let id = setInterval ( ()=> {
+    if(this.timer.timer < 1 ){
+      this.gameDone.gameDone=!this.gameDone.gameDone
+      this.gameRunning.gameRunning = !this.gameRunning.gameRunning
+      clearInterval(id)
+    }else {
+      this.timer.timer--;
+      this.MoleRandomize()
+     }
+    },1000)
  }
 
  MoleRandomize(){ // used for randomizing a spot for the mole to show up in 
   if (this.numberofMoles.numberOfMoles < 4){
     let randomizer =  Math.floor(Math.random() * 26)
-    if(this.testGrid[randomizer]==false){
-      this.testGrid[randomizer]= true
+    if(this.moleGrid[randomizer]==false){
+      this.moleGrid[randomizer]= true
       this.numberofMoles.numberOfMoles ++
-      this.testGrid2[randomizer] = setInterval( ()=> this.moleUpTime(randomizer), 4000) // starts the inertvalls //issues here*******
+      this.moleTimerGrid[randomizer] = setInterval( ()=> this.moleUpTime(randomizer), 4000)
+      this.timerGrid[randomizer] = Date.now()
     }
   }
 }
 moleUpTime(randomizer:number){ // the method for putting the moles back down if they havent been clicked. //issues here****
-  if(this.testGrid[randomizer]){
-    this.testGrid[randomizer]=false
+  if(this.moleGrid[randomizer]){
+    this.moleGrid[randomizer]=false
     this.numberofMoles.numberOfMoles--
-    clearInterval(this.testGrid2[randomizer])
+    clearInterval(this.moleTimerGrid[randomizer])
   }
 }
 
@@ -73,9 +88,12 @@ moleUpTime(randomizer:number){ // the method for putting the moles back down if 
    if(this.gameRunning){
      this.points.points++
      this.numberofMoles.numberOfMoles--
-     console.log(this.numberofMoles.numberOfMoles)
-     this.testGrid[value]= !this.testGrid[value]
-     console.log(value)
+     clearInterval(this.moleTimerGrid[value])
+     this.moleGrid[value]= !this.moleGrid[value] 
+     this.Clicktimer = Date.now() - this.timerGrid[value] // making my timers check timer grid and checking speed with the fastest time.
+     if(this.Clicktimer < this.fastestTime.fastestTime){ 
+      this.fastestTime.fastestTime = this.Clicktimer
+     }    
    }
  }
 }
